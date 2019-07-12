@@ -4,7 +4,7 @@
             :defaultSelectedKeys="['1']"
             :defaultOpenKeys="['2']"
             mode="inline"
-            theme="dark"
+            :theme="theme"
             :inlineCollapsed="collapsed"
         >
             <template v-for="item in list">
@@ -32,6 +32,12 @@
  * */
 import SubMenu from './SubMenu'
 export default {
+    props: {
+        theme: {
+            type: String,
+            default: 'dark'
+        }
+    },
     components: {
         'sub-menu': SubMenu
     },
