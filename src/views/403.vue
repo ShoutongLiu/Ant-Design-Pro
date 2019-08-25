@@ -1,7 +1,6 @@
 <template>
-    <div>
-        <p>基础表单</p>
-        <router-view></router-view>
+    <div class="forbidden">
+        403
     </div>
 </template>
 

@@ -1,24 +1,27 @@
 <template>
     <div style="width: 256px">
         <a-menu
-            :defaultSelectedKeys="['1']"
-            :defaultOpenKeys="['2']"
+            :SelectedKeys="selectedKeys"
+            :OpenKeys.sync="openKeys"
             mode="inline"
             :theme="theme"
-            :inlineCollapsed="collapsed"
         >
-            <template v-for="item in list">
+            <template v-for="item in menuData">
                 <a-menu-item
                     v-if="!item.children"
-                    :key="item.key"
+                    :key="item.path"
+                    @click="() => $router.push({path: item.path, query: $route.query})"
                 >
-                    <a-icon type="pie-chart" />
-                    <span>{{item.title}}</span>
+                    <a-icon
+                        v-if="item.meta.icon"
+                        :type="item.meta.icon"
+                    />
+                    <span>{{item.meta.title}}</span>
                 </a-menu-item>
                 <sub-menu
                     v-else
                     :menu-info="item"
-                    :key="item.key"
+                    :key="item.path"
                 />
             </template>
         </a-menu>
@@ -31,6 +34,7 @@
  * SubMenu1.vue https://github.com/vueComponent/ant-design-vue/blob/master/components/menu/demo/SubMenu1.vue
  * */
 import SubMenu from './SubMenu'
+import { check } from '../utils/auth.js'
 export default {
     props: {
         theme: {
@@ -42,30 +46,69 @@ export default {
         'sub-menu': SubMenu
     },
     data() {
+        this.selectedKeysMap = {}
+        this.openKeysMap = {}
+        const menuData = this.getMenuData(this.$router.options.routes)
         return {
             collapsed: false,
-            list: [
-                {
-                    key: '1',
-                    title: 'Option 1'
-                },
-                {
-                    key: '2',
-                    title: 'Navigation 2',
-                    children: [
-                        {
-                            key: '2.1',
-                            title: 'Navigation 3',
-                            children: [{ key: '2.1.1', title: 'Option 2.1.1' }]
-                        }
-                    ]
-                }
-            ]
+            list: [],
+            menuData,
+            selectedKeys: [],
+            openKeys: []
         }
+    },
+    watch: {
+        '$route.path': function(val) {
+            this.selectedKeys = this.selectedKeysMap[val]
+            this.openKeys = this.collapsed ? [] : this.openKeysMap[val]
+        }
+    },
+    mounted() {
+        console.log(this.menuData)
     },
     methods: {
         toggleCollapsed() {
             this.collapsed = !this.collapsed
+        },
+        getMenuData(routes = [], parentKeys = [], selectedKey) {
+            const menuData = []
+            for (let item of routes) {
+                if (
+                    item.meta &&
+                    item.meta.authority &&
+                    !check(item.meta.authority)
+                ) {
+                    break
+                }
+                if (item.name && !item.hideInMenu) {
+                    this.openKeysMap[item.path] = parentKeys
+                    this.selectedKeysMap[item.path] = [selectedKey || item.path]
+                    const newItem = { ...item }
+                    delete newItem.children
+                    if (item.children && !item.hideChildrenInMenu) {
+                        newItem.children = this.getMenuData(item.children, [
+                            ...parentKeys,
+                            item.path
+                        ])
+                    } else {
+                        this.getMenuData(
+                            item.children,
+                            selectedKey
+                                ? parentKeys
+                                : [...parentKeys, item.path],
+                            selectedKey || item.path
+                        )
+                    }
+                    menuData.push(newItem)
+                } else if (
+                    !item.hideInMenu &&
+                    !item.hideChildrenInMenu &&
+                    item.children
+                ) {
+                    menuData.push(...this.getMenuData(item.children))
+                }
+            }
+            return menuData
         }
     }
 }
