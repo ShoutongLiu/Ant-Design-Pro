@@ -3,6 +3,7 @@ import Router from "vue-router";
 import findLast from 'lodash/findLast'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
+import { notification } from 'ant-design-vue'
 import notfound from './views/404.vue'
 import Forbidden from './views/403.vue'
 import { check, isLogin } from './utils/auth'
@@ -139,6 +140,10 @@ routers.beforeEach((to, from, next) => {
                 path: '/user/login'
             })
         } else if (to.path !== '/403') {
+            notification.error({
+                message: '403',
+                description: '你没有访问权限，请联系管理员。'
+            })
             next({
                 path: '/403'
             })

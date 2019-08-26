@@ -1,9 +1,6 @@
 <template>
     <div :class="[`nav-theme-${navTheme}`, `nav-layout-${navLayout}`]">
-        <a-layout
-            id="components-layout-demo-side"
-            style="min-height: 100vh"
-        >
+        <a-layout id="components-layout-demo-side" style="min-height: 100vh">
             <a-layout-sider
                 v-if="navLayout === 'left'"
                 :theme="navTheme"
@@ -32,51 +29,53 @@
                 </a-layout-footer>
             </a-layout>
         </a-layout>
-        <SettingDrawer />
+        <Authorized :authority="['admin']">
+            <SettingDrawer />
+        </Authorized>
     </div>
 </template>
 
 <script>
-import Header from './Header'
-import Footer from './Footer'
-import SiderMenu from './SiderMenu'
-import SettingDrawer from '../components/SettingDrawer'
+import Header from "./Header";
+import Footer from "./Footer";
+import SiderMenu from "./SiderMenu";
+import SettingDrawer from "../components/SettingDrawer";
 export default {
     components: { Header, Footer, SiderMenu, SettingDrawer },
     data() {
         return {
             collapsed: false
-        }
+        };
     },
     computed: {
         navTheme() {
-            return this.$route.query.navTheme || 'dark'
+            return this.$route.query.navTheme || "dark";
         },
         navLayout() {
-            return this.$route.query.navLayout || 'left'
+            return this.$route.query.navLayout || "left";
         }
     }
-}
+};
 </script>
 
 <style scoped>
     .menu-action {
-      padding: 0 20px;
-      line-height: 64px;
-      cursor: pointer;
-      font-size: 20px;
+        padding: 0 20px;
+        line-height: 64px;
+        cursor: pointer;
+        font-size: 20px;
     }
 
     .menu-action:hover {
-      background-color: #eee;
+        background-color: #eee;
     }
     .logo {
-      height: 64px;
-      line-height: 64px;
-      text-align: center;
-      overflow: hidden;
+        height: 64px;
+        line-height: 64px;
+        text-align: center;
+        overflow: hidden;
     }
     .nav-theme-dark >>> .logo {
-      color: #fff;
+        color: #fff;
     }
 </style>
