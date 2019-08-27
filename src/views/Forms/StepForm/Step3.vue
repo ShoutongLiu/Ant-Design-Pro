@@ -1,11 +1,9 @@
 <template>
-    <div class="result">
-        第三步
-    </div>
+    <div class="result">{{$store.state.form.data.message}}</div>
 </template>
 
 <script>
-export default {}
+export default {};
 </script>
 
 <style>

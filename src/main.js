@@ -1,8 +1,8 @@
 import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
-import store from "./store";
-import { Button, Layout, Icon, Drawer, Radio, Menu, message, notification } from "ant-design-vue";
+import store from "./store/index";
+import { Button, Layout, Icon, Drawer, Radio, Menu, message, notification, Form, Input, Select } from "ant-design-vue";
 import Authorized from './components/Authorized.vue'
 import Auth from './directives/auth'
 
@@ -14,11 +14,21 @@ Vue.use(Icon);
 Vue.use(Drawer);
 Vue.use(Radio);
 Vue.use(Menu);
+Vue.use(Form);
+Vue.use(Input);
+Vue.use(Select);
 Vue.component('Authorized', Authorized)
 Vue.use(Auth)
 
 Vue.prototype.$message = message
 Vue.prototype.$notification = notification
+
+
+const IconFont = Icon.createFromIconfontCN({
+    scriptUrl: '//at.alicdn.com/t/font_1372534_8bu7c357w6p.js', // 在 iconfont.cn 上生成
+});
+
+Vue.component('IconFont', IconFont)
 
 export const MyVue = new Vue({
     router,

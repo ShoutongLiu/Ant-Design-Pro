@@ -1,5 +1,5 @@
 export function getCurrentAuthority() {
-    return ['user']
+    return ['admin']
 }
 
 // 判断用户角色，分配权限
